@@ -51,16 +51,23 @@ body {
   flex: 1;
 }
 
-/* LOGO STYLING */
-.logo-link {
-  position: absolute;
-  left: 0;
-  top: 0;
+/* GLOBAL TOP-LEFT LOGO */
+.global-logo-link {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
 }
 
-.logo-img {
-  width: 42px;   /* adjust size here */
+.global-logo {
+  width: 42px;        /* adjust size here */
   height: auto;
+  cursor: pointer;
+  transition: opacity .2s ease;
+}
+
+.global-logo:hover {
+  opacity: 0.7;
 }
 
 .header h1 {
