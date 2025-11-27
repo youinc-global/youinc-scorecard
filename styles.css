@@ -167,6 +167,17 @@ select {
   .app { margin: 20px auto; padding: 0 10px 24px; }
   .card { padding: 18px 16px; }
 }
+.logo-link {
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.logo-img {
+  width: 120px;
+  height: auto;
+  display: block;
+  margin: 0 auto 12px auto; /* centers the logo */
+}
 
 @media (max-width: 600px) {
   .app {
