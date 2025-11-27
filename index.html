@@ -1,260 +1,484 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>You Inc Scorecard</title>
-  <style>
-  body {
-    font-family: 'Aether', sans-serif;
-    background-color: #ffffff;
-    color: #000;
-    margin: 0;
-    padding: 0;
-  }
-
-  .container {
-    max-width: 650px;
-    margin: 50px auto;
-    padding: 30px;
-  }
-
-  h2, h3 {
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-
-  .section {
-    background: #F1E8C3;
-    padding: 25px;
-    border-radius: 14px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.5s ease;
-  }
-
-  .section.active {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .question {
-    margin-bottom: 25px;
-  }
-
-  input[type=number] {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 8px;
-    border: 1px solid #aaa;
-    margin-top: 6px;
-  }
-
-  button {
-    padding: 12px 22px;
-    cursor: pointer;
-    border: none;
-    background-color: #000;
-    color: #fff;
-    border-radius: 8px;
-    font-weight: bold;
-    transition: background 0.3s ease, transform 0.2s ease;
-  }
-
-  button:hover {
-    background-color: #333;
-    transform: translateY(-2px);
-  }
-
-  .navigation {
-    margin-top: 25px;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .hidden {
-    display: none;
-  }
-
-  .result-box {
-    padding: 25px;
-    background: #F1E8C3;
-    border-radius: 12px;
-    margin-top: 35px;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  }
-</style>
+  <meta charset="utf-8" />
+  <title>YOU Inc. Scorecard</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<div class="container">
+  <main class="app">
+    <header class="header">
+      <h1>YOU Inc. Scorecard</h1>
+      <p class="subtitle">A 3-minute audit of your six internal departments.</p>
+    </header>
 
-  <h2>You Inc Scorecard</h2>
+    <section class="card">
+      <form id="scoreForm" novalidate>
+        <!-- STEP 0: WELCOME -->
+        <div class="step active" data-step="0">
+          <h2>Welcome</h2>
+          <p>
+            This scorecard helps you measure the strength of your six YOU Inc departments:
+            <strong>Brand, Operations, Finance, R&amp;D, Communication, Leadership.</strong>
+          </p>
+          <p>
+            You’ll answer <strong>24 simple questions</strong>. Use the scale from
+            <strong>1 (never true)</strong> to <strong>5 (always true)</strong> based on the
+            <strong>last 30 days</strong>.
+          </p>
+          <button type="button" class="btn primary" id="startBtn">Start scorecard</button>
+        </div>
 
-  <form id="scorecardForm">
+        <!-- QUESTION STEPS (1..24) -->
 
-    <!-- SECTION 1 — BRAND -->
-    <div class="section" id="section1">
-      <h3>Brand</h3>
+        <!-- Brand -->
+        <div class="step" data-step="1">
+          <p class="progress">Question 1 of 24 • Brand</p>
+          <h2>I walk into rooms confident in the value I bring.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="brand" data-index="0">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="question">
-        <label>1. Do you have a clear definition of your personal values?</label><br>
-        <input type="number" name="q1" min="1" max="5" required>
-      </div>
+        <div class="step" data-step="2">
+          <p class="progress">Question 2 of 24 • Brand</p>
+          <h2>My decisions reflect who I want to become, not who I used to be.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="brand" data-index="1">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="question">
-        <label>2. Do you consistently show up as the best version of yourself?</label><br>
-        <input type="number" name="q2" min="1" max="5" required>
-      </div>
+        <div class="step" data-step="3">
+          <p class="progress">Question 3 of 24 • Brand</p>
+          <h2>I speak about myself with clarity and belief.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="brand" data-index="2">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="navigation">
-        <span></span>
-        <button type="button" onclick="nextSection(1)">Next</button>
-      </div>
-    </div>
+        <div class="step" data-step="4">
+          <p class="progress">Question 4 of 24 • Brand</p>
+          <h2>I consistently show up as the “future me” I’m building.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="brand" data-index="3">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-    <!-- SECTION 2 — OPERATIONS -->
-    <div class="section hidden" id="section2">
-      <h3>Operations</h3>
+        <!-- Operations -->
+        <div class="step" data-step="5">
+          <p class="progress">Question 5 of 24 • Operations</p>
+          <h2>I have daily routines that support my goals.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="operations" data-index="4">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="question">
-        <label>3. Do you have daily routines that keep you on track?</label><br>
-        <input type="number" name="q3" min="1" max="5" required>
-      </div>
+        <div class="step" data-step="6">
+          <p class="progress">Question 6 of 24 • Operations</p>
+          <h2>I finish things I start, even when motivation is low.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="operations" data-index="5">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="question">
-        <label>4. Are your systems and habits aligned with your goals?</label><br>
-        <input type="number" name="q4" min="1" max="5" required>
-      </div>
+        <div class="step" data-step="7">
+          <p class="progress">Question 7 of 24 • Operations</p>
+          <h2>I track my progress instead of “winging it.”</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="operations" data-index="6">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="navigation">
-        <button type="button" onclick="prevSection(2)">Back</button>
-        <button type="button" onclick="nextSection(2)">Next</button>
-      </div>
-    </div>
+        <div class="step" data-step="8">
+          <p class="progress">Question 8 of 24 • Operations</p>
+          <h2>My environment makes it easy for me to stay consistent.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="operations" data-index="7">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-    <!-- SECTION 3 — FINANCE (TIME, ENERGY, ATTENTION) -->
-    <div class="section hidden" id="section3">
-      <h3>Finance (Time, Energy, Attention)</h3>
+        <!-- Finance -->
+        <div class="step" data-step="9">
+          <p class="progress">Question 9 of 24 • Finance (Resources)</p>
+          <h2>I manage my energy and don’t waste it on unimportant things.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="finance" data-index="8">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="question">
-        <label>5. Do you manage your time intentionally?</label><br>
-        <input type="number" name="q5" min="1" max="5" required>
-      </div>
+        <div class="step" data-step="10">
+          <p class="progress">Question 10 of 24 • Finance (Resources)</p>
+          <h2>I spend my time intentionally, not reactively.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="finance" data-index="9">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="question">
-        <label>6. Do you protect your energy from distractions or draining people?</label><br>
-        <input type="number" name="q6" min="1" max="5" required>
-      </div>
+        <div class="step" data-step="11">
+          <p class="progress">Question 11 of 24 • Finance (Resources)</p>
+          <h2>I protect my attention from distractions.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="finance" data-index="10">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="navigation">
-        <button type="button" onclick="prevSection(3)">Back</button>
-        <button type="button" onclick="nextSection(3)">Next</button>
-      </div>
-    </div>
+        <div class="step" data-step="12">
+          <p class="progress">Question 12 of 24 • Finance (Resources)</p>
+          <h2>I balance rest and productivity well.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="finance" data-index="11">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-    <!-- SECTION 4 — R&D -->
-    <div class="section hidden" id="section4">
-      <h3>Research & Development</h3>
+        <!-- R&D -->
+        <div class="step" data-step="13">
+          <p class="progress">Question 13 of 24 • R&amp;D</p>
+          <h2>I invest time weekly into learning something new.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="rnd" data-index="12">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="question">
-        <label>7. Do you intentionally learn, grow, and invest in new skills?</label><br>
-        <input type="number" name="q7" min="1" max="5" required>
-      </div>
+        <div class="step" data-step="14">
+          <p class="progress">Question 14 of 24 • R&amp;D</p>
+          <h2>I actively develop skills that my future requires.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="rnd" data-index="13">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="question">
-        <label>8. Do you challenge yourself with new tasks that stretch your ability?</label><br>
-        <input type="number" name="q8" min="1" max="5" required>
-      </div>
+        <div class="step" data-step="15">
+          <p class="progress">Question 15 of 24 • R&amp;D</p>
+          <h2>I review my mistakes so I can improve.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="rnd" data-index="14">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="navigation">
-        <button type="button" onclick="prevSection(4)">Back</button>
-        <button type="button" onclick="nextSection(4)">Next</button>
-      </div>
-    </div>
+        <div class="step" data-step="16">
+          <p class="progress">Question 16 of 24 • R&amp;D</p>
+          <h2>I stay curious and open to new ideas.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="rnd" data-index="15">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-    <!-- SECTION 5 — COMMUNICATION -->
-    <div class="section hidden" id="section5">
-      <h3>Communication</h3>
+        <!-- Communication -->
+        <div class="step" data-step="17">
+          <p class="progress">Question 17 of 24 • Communication</p>
+          <h2>I express myself clearly in conversations.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="communication" data-index="16">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="question">
-        <label>9. Do you communicate confidently and clearly?</label><br>
-        <input type="number" name="q9" min="1" max="5" required>
-      </div>
+        <div class="step" data-step="18">
+          <p class="progress">Question 18 of 24 • Communication</p>
+          <h2>I handle difficult conversations with confidence.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="communication" data-index="17">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="question">
-        <label>10. Do people understand you when you express your thoughts?</label><br>
-        <input type="number" name="q10" min="1" max="5" required>
-      </div>
+        <div class="step" data-step="19">
+          <p class="progress">Question 19 of 24 • Communication</p>
+          <h2>I can communicate my goals and needs effectively.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="communication" data-index="18">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-      <div class="navigation">
-        <button type="button" onclick="prevSection(5)">Back</button>
-        <span></span>
-        <button type="submit">Submit</button>
-      </div>
-    </div>
+        <div class="step" data-step="20">
+          <p class="progress">Question 20 of 24 • Communication</p>
+          <h2>I listen well and respond thoughtfully.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="communication" data-index="19">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-  </form>
+        <!-- Leadership -->
+        <div class="step" data-step="21">
+          <p class="progress">Question 21 of 24 • Leadership</p>
+          <h2>I make decisions without overthinking for days.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="leadership" data-index="20">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-  <div id="result" class="result-box hidden"></div>
+        <div class="step" data-step="22">
+          <p class="progress">Question 22 of 24 • Leadership</p>
+          <h2>I have a clear direction for where I want my life to go.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="leadership" data-index="21">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-</div>
+        <div class="step" data-step="23">
+          <p class="progress">Question 23 of 24 • Leadership</p>
+          <h2>I can lead myself even when I don’t feel motivated.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="leadership" data-index="22">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn">Next</button>
+          </div>
+        </div>
 
-<script>
-function showSection(num) {
-  document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
-  const active = document.getElementById(`section${num}`);
-  active.classList.remove("hidden");
+        <div class="step" data-step="24">
+          <p class="progress">Question 24 of 24 • Leadership</p>
+          <h2>I take responsibility instead of waiting for someone to push me.</h2>
+          <p class="helper">Rate how true this has been for you in the last 30 days.</p>
+          <select required data-dept="leadership" data-index="23">
+            <option value="">Select your answer</option>
+            <option value="1">1 — Never true</option>
+            <option value="2">2 — Rarely true</option>
+            <option value="3">3 — Sometimes true</option>
+            <option value="4">4 — Mostly true</option>
+            <option value="5">5 — Always true</option>
+          </select>
+          <div class="nav">
+            <button type="button" class="btn ghost backBtn">Back</button>
+            <button type="button" class="btn primary nextBtn" id="finishBtn">See my results</button>
+          </div>
+        </div>
 
-  // trigger animation
-  setTimeout(() => active.classList.add("active"), 20);
-}
+      </form>
+    </section>
 
-function nextSection(num) {
-  const current = document.getElementById(`section${num}`);
-  const inputs = current.querySelectorAll("input[required]");
+    <footer class="footer">
+      <small>YOU Inc. • Build yourself like a business.</small>
+    </footer>
+  </main>
 
-  for (let input of inputs) {
-    if (!input.value) {
-      alert("Please answer all required questions.");
-      return;
-    }
-  }
-
-  showSection(num + 1);
-}
-
-function prevSection(num) {
-  showSection(num - 1);
-}
-
-document.getElementById("scorecardForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  let formData = new FormData(this);
-  let total = 0;
-
-  for (let value of formData.values()) {
-    total += Number(value);
-  }
-
-  let percentage = Math.round((total / 50) * 100);
-
-  let resultBox = document.getElementById("result");
-  resultBox.classList.remove("hidden");
-  resultBox.innerHTML = `
-    <h3>Your You Inc Score:</h3>
-    <p><strong style="font-size: 32px;">${percentage}%</strong></p>
-    <p>The higher your score, the stronger and more aligned your internal departments are.</p>
-  `;
-});
-
-// show the first section on load
-showSection(1);
-</script>
-
-
+  <script src="app.js"></script>
 </body>
 </html>

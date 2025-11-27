@@ -1,129 +1,90 @@
-// YOU INC Scorecard — client side logic
-// 24 questions, scale 1-5
 const steps = Array.from(document.querySelectorAll('.step'));
-const progressBar = document.getElementById('progressBar');
-const form = document.getElementById('scoreForm');
+let currentStep = 0;
 
-let current = 0;
-const totalQuestionSteps = 24; // excludes intro + contact
-const answers = new Array(24).fill(null); // index 0..23
-
-// create choice buttons (1..5) for each .choices container
-document.querySelectorAll('.choices').forEach(container => {
-  for (let i=1;i<=5;i++){
-    const c = document.createElement('button');
-    c.type = 'button';
-    c.className = 'choice';
-    c.textContent = i;
-    c.dataset.value = i;
-    container.appendChild(c);
-  }
-});
-
-// helper: update progress
-function updateProgress(){
-  // compute how many question steps completed (answers not null)
-  const done = answers.filter(v => v!==null).length;
-  const percent = Math.round((done / totalQuestionSteps) * 100);
-  progressBar.style.width = `${percent}%`;
+const startBtn = document.getElementById('startBtn');
+if (startBtn) {
+  startBtn.addEventListener('click', () => showStep(1));
 }
 
-// navigation functions
-function showStep(index){
-  steps.forEach(s => s.classList.remove('active'));
-  if (index < 0) index = 0;
-  if (index > steps.length -1) index = steps.length -1;
-  steps[index].classList.add('active');
-  current = index;
-  updateProgress();
-  // focus optional
-  const firstBtn = steps[index].querySelector('.choice');
-  if(firstBtn) firstBtn.focus();
+// Handle Back / Next / Finish
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('backBtn')) {
+    goBack();
+  }
+  if (e.target.classList.contains('nextBtn')) {
+    handleNext(e);
+  }
+});
+
+function showStep(index) {
+  steps.forEach((step, i) => {
+    step.classList.toggle('active', i === index);
+  });
+  currentStep = index;
 }
 
-// start button
-document.querySelectorAll('.startBtn').forEach(b=>b.addEventListener('click', ()=> showStep(1)));
-
-// next/back
-document.addEventListener('click', (e) => {
-  if (e.target.matches('.nextBtn')) {
-    // find next step index
-    const idx = steps.indexOf(e.target.closest('.step'));
-    showStep(idx + 1);
+function goBack() {
+  if (currentStep > 0) {
+    showStep(currentStep - 1);
   }
-  if (e.target.matches('.backBtn')) {
-    const idx = steps.indexOf(e.target.closest('.step'));
-    showStep(idx - 1);
+}
+
+function handleNext(e) {
+  // Intro step (0) → no validation
+  if (currentStep === 0) {
+    showStep(1);
+    return;
   }
-});
 
-// choice selection logic
-document.addEventListener('click', (e) => {
-  if (e.target.matches('.choice')) {
-    const btn = e.target;
-    const container = btn.closest('.choices');
-    const value = Number(btn.dataset.value);
-    const qIndex = Number(container.dataset.index); // 0..23
+  const stepEl = steps[currentStep];
+  const select = stepEl.querySelector('select[required]');
 
-    // mark selected visually
-    container.querySelectorAll('.choice').forEach(x => x.classList.remove('selected'));
-    btn.classList.add('selected');
-
-    // save answer
-    answers[qIndex] = value;
-    updateProgress();
-    // small auto-advance: go to next step after short delay
-    setTimeout(() => {
-      const idx = steps.indexOf(container.closest('.step'));
-      if (idx < steps.length - 1) showStep(idx + 1);
-    }, 180);
+  if (select && !select.value) {
+    alert('Please select an answer before continuing.');
+    return;
   }
-});
 
-// when user clicks final "See results" (submitBtn)
-document.addEventListener('click', (e) => {
-  if (e.target.matches('.submitBtn') || e.target.matches('.submitFinally')) {
-    // if they clicked .submitBtn from step 24 (without optional email), jump to contact step
-    const idx = steps.indexOf(e.target.closest('.step'));
-    // check if all answers present
-    const incomplete = answers.some(v => v === null);
-    if (incomplete && e.target.matches('.submitBtn')) {
-      // move to contact step anyway (we keep allowing user to finish)
-      const contactStep = steps.findIndex(s => s.dataset.step === 'contact');
-      if (contactStep > -1) showStep(contactStep);
-      return;
+  // If it's the last question step, compute and redirect
+  if (currentStep === steps.length - 1 || e.target.id === 'finishBtn') {
+    computeAndRedirect();
+  } else {
+    showStep(currentStep + 1);
+  }
+}
+
+function computeAndRedirect() {
+  const selects = Array.from(document.querySelectorAll('select[data-dept]'));
+
+  const totals = {
+    brand: 0,
+    operations: 0,
+    finance: 0,
+    rnd: 0,
+    communication: 0,
+    leadership: 0
+  };
+
+  selects.forEach(sel => {
+    const dept = sel.dataset.dept;
+    const value = Number(sel.value || 0);
+    if (dept && totals.hasOwnProperty(dept)) {
+      totals[dept] += value;
     }
-    // gather optional email
-    const emailInput = document.querySelector('#email');
-    const email = emailInput ? emailInput.value.trim() : '';
+  });
 
-    // compute dept totals
-    const depts = {
-      brand: answers.slice(0,4).reduce((a,b)=>a+(b||0),0),
-      operations: answers.slice(4,8).reduce((a,b)=>a+(b||0),0),
-      finance: answers.slice(8,12).reduce((a,b)=>a+(b||0),0),
-      rnd: answers.slice(12,16).reduce((a,b)=>a+(b||0),0),
-      communication: answers.slice(16,20).reduce((a,b)=>a+(b||0),0),
-      leadership: answers.slice(20,24).reduce((a,b)=>a+(b||0),0)
-    };
-    const total = Object.values(depts).reduce((a,b)=>a+b,0);
+  const totalScore = Object.values(totals).reduce((a, b) => a + b, 0);
 
-    // build query string safely (numeric values only)
-    const params = new URLSearchParams();
-    params.set('brand', depts.brand);
-    params.set('operations', depts.operations);
-    params.set('finance', depts.finance);
-    params.set('rnd', depts.rnd);
-    params.set('communication', depts.communication);
-    params.set('leadership', depts.leadership);
-    params.set('total', total);
-    if (email) params.set('email', encodeURIComponent(email)); // optional (you may remove if you prefer)
+  const params = new URLSearchParams();
+  params.set('brand', String(totals.brand));
+  params.set('operations', String(totals.operations));
+  params.set('finance', String(totals.finance));
+  params.set('rnd', String(totals.rnd));
+  params.set('communication', String(totals.communication));
+  params.set('leadership', String(totals.leadership));
+  params.set('total', String(totalScore));
 
-    // redirect to results page
-    window.location.href = `results.html?${params.toString()}`;
-  }
-});
+  window.location.href = `results.html?${params.toString()}`;
+}
 
 // initial show
 showStep(0);
-updateProgress();
