@@ -54,13 +54,13 @@ body {
 /* GLOBAL TOP-LEFT LOGO */
 .global-logo-link {
   position: fixed;
-  top: 20px;
-  left: 20px;
+  top: 35px;
+  left: 50px;
   z-index: 1000;
 }
 
 .global-logo {
-  width: 42px;        /* adjust size here */
+  width: 52px;        /* adjust size here */
   height: auto;
   cursor: pointer;
   transition: opacity .2s ease;
