@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>YOU Inc. — Results</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <div class="brand">
+        <div class="logo-circle"></div>
+        <h1>YOU Inc. — Your Results</h1>
+      </div>
+    </header>
+
+    <section class="card-area">
+      <div class="card">
+        <h2>Your YOU Inc. Score</h2>
+        <div id="summary"></div>
+        <hr style="margin:18px 0;border:none;border-top:1px solid rgba(0,0,0,0.06)" />
+        <div id="breakdown"></div>
+        <hr style="margin:18px 0;border:none;border-top:1px solid rgba(0,0,0,0.06)" />
+        <div id="advice"></div>
+        <div style="margin-top:18px;display:flex;gap:12px;flex-wrap:wrap">
+          <a id="cta" class="btn primary" href="#" target="_blank">Book a YOU Inc. call</a>
+          <a id="share" class="btn ghost" href="#">Share this</a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot"><small>YOU Inc. • Build from the inside out</small></footer>
+  </main>
+
+<script>
+  // parse query params
+  const qs = new URLSearchParams(window.location.search);
+  const brand = Number(qs.get('brand')) || 0;
+  const operations = Number(qs.get('operations')) || 0;
+  const finance = Number(qs.get('finance')) || 0;
+  const rnd = Number(qs.get('rnd')) || 0;
+  const communication = Number(qs.get('communication')) || 0;
+  const leadership = Number(qs.get('leadership')) || 0;
+  const total = Number(qs.get('total')) || 0;
+
+  // show summary
+  document.getElementById('summary').innerHTML = `<p style="font-size:20px;font-weight:700;margin:6px 0">Total: ${total} / 120</p>`;
+
+  // breakdown
+  const breakdown = [
+    ['Brand', brand],
+    ['Operations', operations],
+    ['Finance (Resources)', finance],
+    ['R&D', rnd],
+    ['Communication', communication],
+    ['Leadership', leadership]
+  ];
+
+  const breakHtml = breakdown.map(d => `<p><strong>${d[0]}</strong>: ${d[1]} / 20</p>`).join('');
+  document.getElementById('breakdown').innerHTML = breakHtml;
+
+  // weakest department
+  const weakest = breakdown.reduce((a,b) => a[1] < b[1] ? a : b);
+  document.getElementById('advice').innerHTML = `<h3>Your next focus → ${weakest[0]}</h3>` + renderAdvice(weakest[0], weakest[1]);
+
+  // advice helper: thresholds (out of 20)
+  function renderAdvice(dept, score) {
+    const low = score <= 8;
+    const mid = score > 8 && score <= 14;
+    const high = score > 14;
+    let html = '';
+
+    if (low) {
+      html += `<p style="margin:6px 0">This department is holding you back. Start with these exact steps:</p>`;
+      html += getActions(dept,'low');
+    } else if (mid) {
+      html += `<p style="margin:6px 0">You have foundations — sharpen them with these practical moves:</p>`;
+      html += getActions(dept,'mid');
+    } else {
+      html += `<p style="margin:6px 0">Strong. Keep growing with these stretch moves:</p>`;
+      html += getActions(dept,'high');
+    }
+    return html;
+  }
+
+  function getActions(dept, level) {
+    const actions = {
+      'Brand': {
+        low: [
+          'Write a 2-line personal pitch and practise it daily.',
+          'Say “I am” statements each morning — show the future you.',
+          'Take one small public step: comment in a meeting or post a short clip.'
+        ],
+        mid: [
+          'Refine your pitch and record a 60s video making the case for your value.',
+          'Practice a “signature” behaviour (how you enter a room/introduce yourself).',
+          'Ask for feedback from one trusted person this week.'
+        ],
+        high: [
+          'Teach one thing publicly — content or a micro-workshop.',
+          'Create a 30-day habit that doubles down on your brand (daily content).',
+          'Start mentoring someone to solidify your identity as a leader.'
+        ]
+      },
+      'Operations': {
+        low: [
+          'Pick one habit and do it for 7 days (no compromise).',
+          'Remove one distraction from your environment (phone, apps).',
+          'Time-block two hours daily for focused work.'
+        ],
+        mid: [
+          'Use a simple system (2-step): Plan the night before + 60m focus block in morning.',
+          'Track progress weekly and celebrate micro wins.',
+          'Automate or delegate one repetitive task this week.'
+        ],
+        high: [
+          'Scale to a system-driven week: templates, checklists, and batching.',
+          'Teach your system to someone — clarity reveals gaps.',
+          'Document processes so your future self can repeat them.'
+        ]
+      },
+      'Finance (Resources)': {
+        low: [
+          'Start a daily 10-minute energy audit: what drained you today?',
+          'Block a daily “deep energy” window — defend it fiercely.',
+          'Say no to one meeting or request that doesn’t move the needle.'
+        ],
+        mid: [
+          'Design a weekly plan protecting your top 3 priorities.',
+          'Track where your attention goes for 3 days (no judgement).',
+          'Schedule recovery — sleep + short breaks are not optional.'
+        ],
+        high: [
+          'Experiment with advanced energy systems (day-parting, focused sprints).',
+          'Audit and remove weak commitments — free 5+ hours/week.',
+          'Delegate or automate low-value work and protect cognitive time.'
+        ]
+      },
+      'R&D': {
+        low: [
+          'Set 30 minutes, 3x per week to learn a skill tied to your next step.',
+          'Pick 1 book/article per month and apply one idea immediately.',
+          'Join a focused cohort or micro-course for accountability.'
+        ],
+        mid: [
+          'Create a 90-day learning plan with measurable outcomes.',
+          'Teach what you learn — record notes or make micro-lessons.',
+          'Schedule deliberate practice sessions, not passive consumption.'
+        ],
+        high: [
+          'Build a public portfolio of projects that show growth.',
+          'Mentor others and consolidate learning through teaching.',
+          'Invest in a long-form program that stretches your skillset.'
+        ]
+      },
+      'Communication': {
+        low: [
+          'Record one 60s practice clip and watch it back — do one tweak.',
+          'Use a template for difficult conversations: Facts → Feelings → Ask.',
+          'Practice active listening: repeat 1 key idea before responding.'
+        ],
+        mid: [
+          'Run mock interviews or pitches with a friend and get feedback.',
+          'Write down your main points before important calls.',
+          'Join a conversation group and deliberately speak for 2 minutes each time.'
+        ],
+        high: [
+          'Teach communication skills publicly (short masterclass).',
+          'Create a 30-day clarity challenge: 1 crisp message per day.',
+          'Refine storytelling: map 3 stories you use in career settings.'
+        ]
+      },
+      'Leadership': {
+        low: [
+          'Make 3 small, clear decisions today and own them.',
+          'Set a 90-day direction and one non-negotiable priority.',
+          'Start a short weekly review to reflect on decisions and outcomes.'
+        ],
+        mid: [
+          'Practice decision speed: limit analysis to 30–60 minutes for small moves.',
+          'Define guardrails for choices (values, time, impact).',
+          'Publicly commit to one leadership action and report back after 2 weeks.'
+        ],
+        high: [
+          'Lead a small project end-to-end to scale leadership muscle.',
+          'Develop a decision checklist for bigger choices.',
+          'Coach someone — leadership grows by serving others.'
+        ]
+      }
+    };
+
+    const items = actions[dept][level];
+    return `<ul>${items.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+  }
+
+  // CTA links (you can edit)
+  document.getElementById('cta').href = 'mailto:hello@youinc.global?subject=YOU%20Inc%20Score%20Review';
+  document.getElementById('share').addEventListener('click', () => {
+    if (navigator.share) {
+      navigator.share({title:'My YOU Inc. Score', text:`I just checked my YOU Inc. score: ${total}/120`, url: window.location.href});
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Link copied to clipboard');
+    }
+  });
+</script>
+</body>
+</html>

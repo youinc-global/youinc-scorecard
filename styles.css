@@ -1,0 +1,69 @@
+/* YOU INC. brand: black + beige #F1E8C3
+   If you have the Aether font file, add @font-face here:
+   @font-face { font-family: 'Aether'; src: url('/fonts/Aether.woff2') format('woff2'); font-weight: 300 700; font-style: normal; font-display: swap; }
+*/
+
+:root{
+  --black:#000000;
+  --beige:#F1E8C3;
+  --white:#ffffff;
+  --muted:#777;
+  --radius:12px;
+  --card-pad:20px;
+  --max-width:520px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:"Aether", Inter, "Segoe UI", Roboto, system-ui, -apple-system, "Helvetica Neue", Arial;}
+
+body{
+  background:var(--white);
+  color:var(--black);
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+.app{max-width:var(--max-width);margin:28px auto;padding:18px}
+.top{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo-circle{width:44px;height:44px;border-radius:50%;background:var(--black);box-shadow:0 6px 18px rgba(0,0,0,0.12)}
+.brand h1{font-size:18px;margin:0;font-weight:700;letter-spacing:0.6px}
+
+#progressWrap{height:6px;background:rgba(0,0,0,0.06);border-radius:8px;overflow:hidden}
+#progressBar{height:100%;width:0;background:linear-gradient(90deg,var(--black),var(--beige));transition:width .3s ease}
+
+.card-area{padding-top:12px}
+.card{background:var(--white);padding:var(--card-pad);border-radius:var(--radius);box-shadow:0 10px 30px rgba(0,0,0,0.06)}
+.step{display:none}
+.step.active{display:block;animation:slideIn .32s ease}
+h2,h3{margin:0 0 8px 0}
+p{margin:0 0 16px 0;color:var(--muted)}
+
+.choices{display:flex;gap:10px;justify-content:center;margin:18px 0}
+.choice{
+  width:44px;height:44px;border-radius:999px;display:flex;align-items:center;justify-content:center;
+  border:2px solid rgba(0,0,0,0.06);cursor:pointer;font-weight:700;background:transparent;color:var(--black);
+  transition:transform .15s ease, border-color .15s ease, background .15s ease;
+}
+.choice:hover{transform:translateY(-4px)}
+.choice.selected{background:var(--black);color:var(--beige);border-color:var(--black)}
+
+.nav{display:flex;gap:12px;justify-content:space-between;margin-top:16px}
+.btn{padding:10px 16px;border-radius:10px;border:none;cursor:pointer;font-weight:700}
+.btn.primary{background:var(--black);color:var(--beige)}
+.btn.ghost{background:transparent;border:2px solid rgba(0,0,0,0.06)}
+.btn.submitFinally{background:var(--black);color:var(--beige)}
+
+.emailInput{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(0,0,0,0.08);margin-top:8px}
+
+.foot{margin-top:18px;text-align:center;color:var(--muted)}
+
+@keyframes slideIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+
+/* responsive */
+@media (max-width:520px){
+  .app{padding:12px;margin:12px}
+  .brand h1{font-size:16px}
+  .logo-circle{width:40px;height:40px}
+  .choice{width:40px;height:40px}
+}

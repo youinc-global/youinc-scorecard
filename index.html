@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You Inc Scorecard</title>
+  <style>
+  body {
+    font-family: 'Aether', sans-serif;
+    background-color: #ffffff;
+    color: #000;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    max-width: 650px;
+    margin: 50px auto;
+    padding: 30px;
+  }
+
+  h2, h3 {
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .section {
+    background: #F1E8C3;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s ease;
+  }
+
+  .section.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .question {
+    margin-bottom: 25px;
+  }
+
+  input[type=number] {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #aaa;
+    margin-top: 6px;
+  }
+
+  button {
+    padding: 12px 22px;
+    cursor: pointer;
+    border: none;
+    background-color: #000;
+    color: #fff;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background 0.3s ease, transform 0.2s ease;
+  }
+
+  button:hover {
+    background-color: #333;
+    transform: translateY(-2px);
+  }
+
+  .navigation {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .result-box {
+    padding: 25px;
+    background: #F1E8C3;
+    border-radius: 12px;
+    margin-top: 35px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h2>You Inc Scorecard</h2>
+
+  <form id="scorecardForm">
+
+    <!-- SECTION 1 — BRAND -->
+    <div class="section" id="section1">
+      <h3>Brand</h3>
+
+      <div class="question">
+        <label>1. Do you have a clear definition of your personal values?</label><br>
+        <input type="number" name="q1" min="1" max="5" required>
+      </div>
+
+      <div class="question">
+        <label>2. Do you consistently show up as the best version of yourself?</label><br>
+        <input type="number" name="q2" min="1" max="5" required>
+      </div>
+
+      <div class="navigation">
+        <span></span>
+        <button type="button" onclick="nextSection(1)">Next</button>
+      </div>
+    </div>
+
+    <!-- SECTION 2 — OPERATIONS -->
+    <div class="section hidden" id="section2">
+      <h3>Operations</h3>
+
+      <div class="question">
+        <label>3. Do you have daily routines that keep you on track?</label><br>
+        <input type="number" name="q3" min="1" max="5" required>
+      </div>
+
+      <div class="question">
+        <label>4. Are your systems and habits aligned with your goals?</label><br>
+        <input type="number" name="q4" min="1" max="5" required>
+      </div>
+
+      <div class="navigation">
+        <button type="button" onclick="prevSection(2)">Back</button>
+        <button type="button" onclick="nextSection(2)">Next</button>
+      </div>
+    </div>
+
+    <!-- SECTION 3 — FINANCE (TIME, ENERGY, ATTENTION) -->
+    <div class="section hidden" id="section3">
+      <h3>Finance (Time, Energy, Attention)</h3>
+
+      <div class="question">
+        <label>5. Do you manage your time intentionally?</label><br>
+        <input type="number" name="q5" min="1" max="5" required>
+      </div>
+
+      <div class="question">
+        <label>6. Do you protect your energy from distractions or draining people?</label><br>
+        <input type="number" name="q6" min="1" max="5" required>
+      </div>
+
+      <div class="navigation">
+        <button type="button" onclick="prevSection(3)">Back</button>
+        <button type="button" onclick="nextSection(3)">Next</button>
+      </div>
+    </div>
+
+    <!-- SECTION 4 — R&D -->
+    <div class="section hidden" id="section4">
+      <h3>Research & Development</h3>
+
+      <div class="question">
+        <label>7. Do you intentionally learn, grow, and invest in new skills?</label><br>
+        <input type="number" name="q7" min="1" max="5" required>
+      </div>
+
+      <div class="question">
+        <label>8. Do you challenge yourself with new tasks that stretch your ability?</label><br>
+        <input type="number" name="q8" min="1" max="5" required>
+      </div>
+
+      <div class="navigation">
+        <button type="button" onclick="prevSection(4)">Back</button>
+        <button type="button" onclick="nextSection(4)">Next</button>
+      </div>
+    </div>
+
+    <!-- SECTION 5 — COMMUNICATION -->
+    <div class="section hidden" id="section5">
+      <h3>Communication</h3>
+
+      <div class="question">
+        <label>9. Do you communicate confidently and clearly?</label><br>
+        <input type="number" name="q9" min="1" max="5" required>
+      </div>
+
+      <div class="question">
+        <label>10. Do people understand you when you express your thoughts?</label><br>
+        <input type="number" name="q10" min="1" max="5" required>
+      </div>
+
+      <div class="navigation">
+        <button type="button" onclick="prevSection(5)">Back</button>
+        <span></span>
+        <button type="submit">Submit</button>
+      </div>
+    </div>
+
+  </form>
+
+  <div id="result" class="result-box hidden"></div>
+
+</div>
+
+<script>
+function showSection(num) {
+  document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
+  const active = document.getElementById(`section${num}`);
+  active.classList.remove("hidden");
+
+  // trigger animation
+  setTimeout(() => active.classList.add("active"), 20);
+}
+
+function nextSection(num) {
+  const current = document.getElementById(`section${num}`);
+  const inputs = current.querySelectorAll("input[required]");
+
+  for (let input of inputs) {
+    if (!input.value) {
+      alert("Please answer all required questions.");
+      return;
+    }
+  }
+
+  showSection(num + 1);
+}
+
+function prevSection(num) {
+  showSection(num - 1);
+}
+
+document.getElementById("scorecardForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  let formData = new FormData(this);
+  let total = 0;
+
+  for (let value of formData.values()) {
+    total += Number(value);
+  }
+
+  let percentage = Math.round((total / 50) * 100);
+
+  let resultBox = document.getElementById("result");
+  resultBox.classList.remove("hidden");
+  resultBox.innerHTML = `
+    <h3>Your You Inc Score:</h3>
+    <p><strong style="font-size: 32px;">${percentage}%</strong></p>
+    <p>The higher your score, the stronger and more aligned your internal departments are.</p>
+  `;
+});
+
+// show the first section on load
+showSection(1);
+</script>
+
+
+</body>
+</html>
