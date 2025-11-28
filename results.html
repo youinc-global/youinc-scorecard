@@ -42,144 +42,313 @@
     </footer>
   </main>
 
-<script>
-  // Parse query string
-  const qs = new URLSearchParams(window.location.search);
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const supabaseClient = supabase.createClient(
+      "https://dqqbihdpfhjuzcdvhegl.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRxcWJpaGRwZmhqdXpjZHZoZWdsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQyNDIwODksImV4cCI6MjA3OTgxODA4OX0.4vF5nYB2wsl4dG6GtpQecVMDdvYopcX8elIzJ5HnGG0"
+    );
+  </script>
 
-  const name = qs.get('name') || '';
+  <!-- jsPDF for PDF generation -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 
-  const brand = Number(qs.get('brand') || 0);
-  const operations = Number(qs.get('operations') || 0);
-  const finance = Number(qs.get('finance') || 0);
-  const rnd = Number(qs.get('rnd') || 0);
-  const communication = Number(qs.get('communication') || 0);
-  const leadership = Number(qs.get('leadership') || 0);
-  const total = Number(qs.get('total') || 0);
+  <script>
+    // Parse query string
+    const qs = new URLSearchParams(window.location.search);
 
-  const maxTotal = 120;
+    const name = qs.get('name') || '';
 
-  // PHASE LOGIC (6 phases)
-  function getPhase(score) {
-    if (score <= 20) return "Survival";
-    if (score <= 40) return "Rebuild";
-    if (score <= 60) return "Stability";
-    if (score <= 80) return "Growth";
-    if (score <= 100) return "Momentum";
-    return "Mastery";
-  }
+    const brand = Number(qs.get('brand') || 0);
+    const operations = Number(qs.get('operations') || 0);
+    const finance = Number(qs.get('finance') || 0);
+    const rnd = Number(qs.get('rnd') || 0);
+    const communication = Number(qs.get('communication') || 0);
+    const leadership = Number(qs.get('leadership') || 0);
+    const total = Number(qs.get('total') || 0);
 
-  function getPhaseDescription(phase) {
-    switch (phase) {
-      case "Survival":
-        return "You’re doing your best, but structure is missing. This is the perfect starting point — awareness creates opportunity.";
-      case "Rebuild":
-        return "You’re becoming aware of what needs to change. This is where foundations are created.";
-      case "Stability":
-        return "You’re forming consistency. Some things are working, some are not — but you’re getting better.";
-      case "Growth":
-        return "You’re intentionally improving. Your habits and identity are aligning. Progress is noticeable.";
-      case "Momentum":
-        return "You’re operating at a high level. Your systems, habits and identity are supporting your goals strongly.";
-      case "Mastery":
-        return "You’re highly aligned. Your self-leadership, clarity and execution are at a top-performing level.";
+    const recordId = qs.get('recordId') || null;
+
+    const maxTotal = 120;
+
+    // PHASE LOGIC (6 phases)
+    function getPhase(score) {
+      if (score <= 20) return "Survival";
+      if (score <= 40) return "Rebuild";
+      if (score <= 60) return "Stability";
+      if (score <= 80) return "Growth";
+      if (score <= 100) return "Momentum";
+      return "Mastery";
     }
-  }
 
-  // FIND WEAKEST DEPARTMENT
-  const scores = [
-    ["Brand", brand],
-    ["Operations", operations],
-    ["Finance (Time/Energy)", finance],
-    ["R&D", rnd],
-    ["Communication", communication],
-    ["Leadership", leadership]
-  ];
-
-  const weakest = scores.reduce((min, curr) => curr[1] < min[1] ? curr : min, scores[0]);
-  const [weakDept, weakScore] = weakest;
-
-  // SIMPLE ACTION RECOMMENDATIONS PER DEPARTMENT
-  function recommendationFor(dept) {
-    switch (dept) {
-      case "Brand":
-        return "Spend 10 minutes each morning defining the version of YOU you're trying to become. Identity drives behaviour.";
-      case "Operations":
-        return "Choose one routine you can repeat daily for the next 7 days. Keep it small, but consistent.";
-      case "Finance (Time/Energy)":
-        return "Do a 24-hour time audit. Remove one distraction and protect one energy source.";
-      case "R&D":
-        return "Commit to learning one new skill or concept every day (10 minutes is enough).";
-      case "Communication":
-        return "Practice saying what you mean in one sentence. Clarity comes from simplicity.";
-      case "Leadership":
-        return "Make one small decision quickly today. Leadership is built through action, not certainty.";
+    function getPhaseDescription(phase) {
+      switch (phase) {
+        case "Survival":
+          return "You’re doing your best, but structure is missing. This is the perfect starting point — awareness creates opportunity.";
+        case "Rebuild":
+          return "You’re becoming aware of what needs to change. This is where foundations are created.";
+        case "Stability":
+          return "You’re forming consistency. Some things are working, some are not — but you’re getting better.";
+        case "Growth":
+          return "You’re intentionally improving. Your habits and identity are aligning. Progress is noticeable.";
+        case "Momentum":
+          return "You’re operating at a high level. Your systems, habits and identity are supporting your goals strongly.";
+        case "Mastery":
+          return "You’re highly aligned. Your self-leadership, clarity and execution are at a top-performing level.";
+      }
     }
-  }
 
-  // BUILD PAGE SECTIONS
-  const phaseName = getPhase(total);
-  const phaseDesc = getPhaseDescription(phaseName);
+    // FIND WEAKEST DEPARTMENT
+    const scores = [
+      ["Brand", brand],
+      ["Operations", operations],
+      ["Finance (Time/Energy)", finance],
+      ["R&D", rnd],
+      ["Communication", communication],
+      ["Leadership", leadership]
+    ];
 
-  const summaryEl = document.getElementById('summary');
-  summaryEl.innerHTML = `
-    ${name ? `<p style="margin:0 0 8px 0;font-size:15px;">Hey <strong>${name}</strong>, here's your quick overview:</p>` : ""}
-    <p style="margin:0;font-size:24px;font-weight:700;">${total} / ${maxTotal}</p>
-    <p style="margin:6px 0 0;font-size:13px;color:#666;">Your current YOU Inc. score</p>
-  `;
+    const weakest = scores.reduce((min, curr) => curr[1] < min[1] ? curr : min, scores[0]);
+    const [weakDept, weakScore] = weakest;
 
-  const phaseEl = document.getElementById('phase');
-  phaseEl.innerHTML = `
-    <h2 style="margin:0 0 6px 0;">Your Phase: <strong>${phaseName}</strong></h2>
-    <p style="margin:0;font-size:14px;">${phaseDesc}</p>
-  `;
+    // SIMPLE ACTION RECOMMENDATIONS PER DEPARTMENT
+    function recommendationFor(dept) {
+      switch (dept) {
+        case "Brand":
+          return "Spend 10 minutes each morning defining the version of YOU you're trying to become. Identity drives behaviour.";
+        case "Operations":
+          return "Choose one routine you can repeat daily for the next 7 days. Keep it small, but consistent.";
+        case "Finance (Time/Energy)":
+          return "Do a 24-hour time audit. Remove one distraction and protect one energy source.";
+        case "R&D":
+          return "Commit to learning one new skill or concept every day (10 minutes is enough).";
+        case "Communication":
+          return "Practice saying what you mean in one sentence. Clarity comes from simplicity.";
+        case "Leadership":
+          return "Make one small decision quickly today. Leadership is built through action, not certainty.";
+      }
+    }
 
-  const weakestEl = document.getElementById('weakest');
-  weakestEl.innerHTML = `
-    <h2 style="margin:0 0 6px 0;">Department to Focus Next</h2>
-    <p style="margin:0 0 10px 0;font-size:15px;"><strong>${weakDept}</strong> (Score: ${weakScore} / 20)</p>
-    <p style="margin:0;font-size:14px;">${recommendationFor(weakDept)}</p>
-  `;
+    // BUILD PAGE SECTIONS
+    const phaseName = getPhase(total);
+    const phaseDesc = getPhaseDescription(phaseName);
 
-// Dynamic CTA message based on phase
-function phaseCTA(phase) {
-  switch (phase) {
-    case "Survival":
-      return "You’re in a pivotal moment. Before life gets heavier, this is the time to take control. Join the next session — let’s build your foundation together.";
-    case "Rebuild":
-      return "You’re becoming aware of what needs to change — that’s powerful. The next session will help you rebuild your systems step-by-step.";
-    case "Stability":
-      return "You’re becoming more consistent. Now it’s time to strengthen your structure so your progress sticks. Join the next live training to stabilise your momentum.";
-    case "Growth":
-      return "You’re evolving, and it’s showing. The next live session will help you sharpen your systems and scale your growth.";
-    case "Momentum":
-      return "You’re performing at a strong level. Your next step is refining your edge and staying consistent. Join the next session to level up your leadership and clarity.";
-    case "Mastery":
-      return "You’re operating at a high level. Now it’s about precision, mastery, and scaling the version of you that works. Join the next session to stay ahead of your growth curve.";
-  }
-}
+    const summaryEl = document.getElementById('summary');
+    summaryEl.innerHTML = `
+      ${name ? `<p style="margin:0 0 8px 0;font-size:15px;">Hey <strong>${name}</strong>, here's your quick overview:</p>` : ""}
+      <p style="margin:0;font-size:24px;font-weight:700;">${total} / ${maxTotal}</p>
+      <p style="margin:6px 0 0;font-size:13px;color:#666;">Your current YOU Inc. score</p>
+    `;
 
-// Render CTA section
-const ctaEl = document.getElementById('cta');
-ctaEl.innerHTML = `
-  <h2 style="margin:0 0 6px 0;">Ready for Your Next Upgrade?</h2>
-  <p style="margin:0 0 14px 0;font-size:14px;">${phaseCTA(phaseName)}</p>
+    const phaseEl = document.getElementById('phase');
+    phaseEl.innerHTML = `
+      <h2 style="margin:0 0 6px 0;">Your Phase: <strong>${phaseName}</strong></h2>
+      <p style="margin:0;font-size:14px;">${phaseDesc}</p>
+    `;
 
-  <div style="display:flex;justify-content:center;margin-top:10px;">
-    <a href="https://www.youinc.global/webinars" class="btn primary" style="text-decoration:none;">
-      Join the Next Live Training →
-    </a>
-  </div>
+    const weakestEl = document.getElementById('weakest');
+    weakestEl.innerHTML = `
+      <h2 style="margin:0 0 6px 0;">Department to Focus Next</h2>
+      <p style="margin:0 0 10px 0;font-size:15px;"><strong>${weakDept}</strong> (Score: ${weakScore} / 20)</p>
+      <p style="margin:0;font-size:14px;">${recommendationFor(weakDept)}</p>
+    `;
 
-  <hr style="border:none;border-top:1px solid #eee;margin:20px 0;">
+    // Dynamic CTA message based on phase
+    function phaseCTA(phase) {
+      switch (phase) {
+        case "Survival":
+          return "You’re in a pivotal moment. Before life gets heavier, this is the time to take control. Join the next session — let’s build your foundation together.";
+        case "Rebuild":
+          return "You’re becoming aware of what needs to change — that’s powerful. The next session will help you rebuild your systems step-by-step.";
+        case "Stability":
+          return "You’re becoming more consistent. Now it’s time to strengthen your structure so your progress sticks. Join the next live training to stabilise your momentum.";
+        case "Growth":
+          return "You’re evolving, and it’s showing. The next live session will help you sharpen your systems and scale your growth.";
+        case "Momentum":
+          return "You’re performing at a strong level. Your next step is refining your edge and staying consistent. Join the next session to level up your leadership and clarity.";
+        case "Mastery":
+          return "You’re operating at a high level. Now it’s about precision, mastery, and scaling the version of you that works. Join the next session to stay ahead of your growth curve.";
+      }
+    }
 
-  <h3 style="margin:0 0 6px 0;font-size:16px;">Your Full Breakdown</h3>
-  <p style="margin:0 0 10px 0;font-size:14px;">
-    A detailed analysis of your six departments has been sent to your email — including insights and your personalised growth roadmap.
-  </p>
-  <p style="margin:0;font-size:13px;color:#666;">If you don’t see it yet, check your spam folder.</p>
-`;
+    // Render CTA section (Option A: focus on PDF download, no email promise)
+    const ctaEl = document.getElementById('cta');
+    ctaEl.innerHTML = `
+      <h2 style="margin:0 0 6px 0;">Ready for Your Next Upgrade?</h2>
+      <p style="margin:0 0 14px 0;font-size:14px;">${phaseCTA(phaseName)}</p>
 
-</script>
+      <div style="display:flex;justify-content:center;margin-top:10px;">
+        <a href="https://www.youinc.global/webinars" class="btn primary" style="text-decoration:none;">
+          Join the Next Live Training →
+        </a>
+      </div>
+
+      <hr style="border:none;border-top:1px solid #eee;margin:20px 0;">
+
+      <h3 style="margin:0 0 6px 0;font-size:16px;">Your Full Breakdown</h3>
+      <p style="margin:0 0 10px 0;font-size:14px;">
+        Your full personalised breakdown is ready. You can download your PDF report below.
+      </p>
+
+      <div style="display:flex;justify-content:center;margin-top:10px;">
+        <button id="downloadPdfBtn" class="btn primary">Download My Full Breakdown (PDF)</button>
+      </div>
+    `;
+
+    // ====== PDF GENERATION + UPLOAD ======
+    const downloadBtn = document.getElementById("downloadPdfBtn");
+
+    if (downloadBtn) {
+      downloadBtn.addEventListener("click", async () => {
+        try {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+
+          const safeName = name && name.trim() ? name.trim() : "Guest";
+          const fileName =
+            "YOU-Inc-" + safeName.replace(/\s+/g, "-") + "-Breakdown.pdf";
+
+          // Colors
+          const beige = { r: 241, g: 232, b: 195 };
+
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(18);
+
+          // Header
+          doc.text("YOU Inc. Scorecard Breakdown", 14, 20);
+
+          // Beige line
+          doc.setDrawColor(beige.r, beige.g, beige.b);
+          doc.setLineWidth(0.8);
+          doc.line(14, 24, 196, 24);
+
+          let y = 32;
+
+          // Name + Total Score
+          doc.setFontSize(12);
+          doc.setFont("helvetica", "normal");
+          doc.text(`Name: ${safeName}`, 14, y);
+          y += 8;
+          doc.text(`Total Score: ${total} / ${maxTotal}`, 14, y);
+          y += 10;
+
+          // Phase section
+          doc.setFillColor(beige.r, beige.g, beige.b);
+          doc.rect(14, y, 182, 8, "F");
+          doc.setTextColor(0, 0, 0);
+          doc.setFont("helvetica", "bold");
+          doc.text(`Phase: ${phaseName}`, 16, y + 6);
+          y += 14;
+
+          doc.setFont("helvetica", "normal");
+          const phaseLines = doc.splitTextToSize(phaseDesc, 182);
+          doc.text(phaseLines, 14, y);
+          y += phaseLines.length * 6 + 6;
+
+          // Weakest department section
+          doc.setFillColor(beige.r, beige.g, beige.b);
+          doc.rect(14, y, 182, 8, "F");
+          doc.setFont("helvetica", "bold");
+          doc.text(
+            `Weakest Department: ${weakDept} (${weakScore} / 20)`,
+            16,
+            y + 6
+          );
+          y += 14;
+
+          doc.setFont("helvetica", "normal");
+          const recLines = doc.splitTextToSize(
+            recommendationFor(weakDept),
+            182
+          );
+          doc.text(recLines, 14, y);
+          y += recLines.length * 6 + 10;
+
+          // CTA section
+          doc.setFillColor(beige.r, beige.g, beige.b);
+          doc.rect(14, y, 182, 8, "F");
+          doc.setFont("helvetica", "bold");
+          doc.text("Next Step", 16, y + 6);
+          y += 14;
+
+          const ctaLines = doc.splitTextToSize(
+            phaseCTA(phaseName) +
+              " If you want to go deeper, join the next YOU Inc. live training at youinc.global.",
+            182
+          );
+          doc.setFont("helvetica", "normal");
+          doc.text(ctaLines, 14, y);
+          y += ctaLines.length * 6 + 10;
+
+          // Footer
+          doc.setFontSize(10);
+          doc.setTextColor(120, 120, 120);
+          doc.text(
+            "YOU Inc • Build yourself like a business • youinc.global",
+            14,
+            285
+          );
+
+          // Create blob for upload
+          const pdfBlob = doc.output("blob");
+
+          // Trigger download for the user
+          doc.save(fileName);
+
+          // If we have a recordId, upload and update DB
+          if (recordId) {
+            const path =
+              "YOU-Inc-" +
+              safeName.replace(/\s+/g, "-") +
+              "-" +
+              recordId +
+              "-Breakdown.pdf";
+
+            // Upload to Supabase Storage
+            const { data: uploadData, error: uploadError } =
+              await supabaseClient.storage
+                .from("scorecard_pdfs")
+                .upload(path, pdfBlob, {
+                  cacheControl: "3600",
+                  upsert: true,
+                  contentType: "application/pdf",
+                });
+
+            if (uploadError) {
+              console.error("PDF upload error:", uploadError);
+              return;
+            }
+
+            // Get public URL
+            const { data: publicUrlData } = supabaseClient.storage
+              .from("scorecard_pdfs")
+              .getPublicUrl(path);
+
+            const pdfUrl =
+              publicUrlData && publicUrlData.publicUrl
+                ? publicUrlData.publicUrl
+                : null;
+
+            if (pdfUrl) {
+              // Update the row with pdf_url
+              const { error: updateError } = await supabaseClient
+                .from("youinc_scores")
+                .update({ pdf_url: pdfUrl })
+                .eq("id", recordId);
+
+              if (updateError) {
+                console.error("Error updating pdf_url:", updateError);
+              }
+            }
+          }
+        } catch (err) {
+          console.error("Error generating PDF:", err);
+          alert("Something went wrong creating your PDF. Please try again.");
+        }
+      });
+    }
+  </script>
 
 </body>
 </html>
