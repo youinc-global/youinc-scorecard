@@ -30,21 +30,19 @@ function goBack() {
 }
 
 function handleNext(e) {
-  // Intro step (0) → no validation
-  if (currentStep === 0) {
-    showStep(1);
-    return;
-  }
-
   const stepEl = steps[currentStep];
-  const select = stepEl.querySelector('select[required]');
 
-  if (select && !select.value) {
-    alert('Please select an answer before continuing.');
-    return;
+  // All required fields in this step (inputs + selects)
+  const requiredFields = stepEl.querySelectorAll('select[required], input[required]');
+
+  for (const field of requiredFields) {
+    if (!field.value || !field.value.trim()) {
+      alert('Please fill in all required fields before continuing.');
+      return;
+    }
   }
 
-  // If it's the last question step, compute and redirect
+  // If it's the last step (or finish button), compute and go to results
   if (currentStep === steps.length - 1 || e.target.id === 'finishBtn') {
     computeAndRedirect();
   } else {
@@ -82,6 +80,15 @@ function computeAndRedirect() {
   params.set('communication', String(totals.communication));
   params.set('leadership', String(totals.leadership));
   params.set('total', String(totalScore));
+
+  // Add name to personalise results
+  const nameField = document.querySelector('input[name="fullName"]');
+  if (nameField && nameField.value.trim()) {
+    params.set('name', nameField.value.trim());
+  }
+
+  // We will use email later for sending, but keep it off the URL for now
+  // const emailField = document.querySelector('input[name="email"]');
 
   window.location.href = `results.html?${params.toString()}`;
 }
