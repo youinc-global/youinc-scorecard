@@ -39,15 +39,21 @@
     const communication = Number(qs.get('communication') || 0);
     const leadership = Number(qs.get('leadership') || 0);
     const total = Number(qs.get('total') || 0);
+    const name = qs.get('name') || '';
 
     const maxPerDept = 20; // 4 questions * 5
     const maxTotal = 120;  // 6 * 20
 
-    const summaryEl = document.getElementById('summary');
-    summaryEl.innerHTML = `
-      <p style="margin:0 0 4px 0;font-size:14px;color:#666;">Total YOU Inc. score</p>
-      <p style="margin:0;font-size:26px;font-weight:700;">${total} / ${maxTotal}</p>
-    `;
+   const summaryEl = document.getElementById('summary');
+const greeting = name
+  ? `<p style="margin:0 0 4px 0;font-size:14px;">Hey <strong>${name}</strong>, here’s your YOU Inc. snapshot:</p>`
+  : '';
+
+summaryEl.innerHTML = `
+  ${greeting}
+  <p style="margin:0 0 4px 0;font-size:14px;color:#666;">Total YOU Inc. score</p>
+  <p style="margin:0;font-size:26px;font-weight:700;">${total} / ${maxTotal}</p>
+`;
 
     const breakdownData = [
       ['Brand', brand],
