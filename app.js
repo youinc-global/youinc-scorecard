@@ -1,67 +1,77 @@
-const steps = Array.from(document.querySelectorAll('.step'));
+// ---------------------------
+// STEP SYSTEM SETUP
+// ---------------------------
+const steps = Array.from(document.querySelectorAll(".step"));
 let currentStep = 0;
 
-const startBtn = document.getElementById('startBtn');
-if (startBtn) {
-  startBtn.addEventListener('click', () => showStep(1));
-}
-
-// Handle Back / Next / Finish
-document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('backBtn')) {
-    goBack();
-  }
-  if (e.target.classList.contains('nextBtn')) {
-    handleNext(e);
-  }
-});
-
-function showStep(index) {
-  steps.forEach((step, i) => {
-    step.classList.toggle('active', i === index);
+function showStep(n) {
+  steps.forEach((s, i) => {
+    s.classList.toggle("active", i === n);
   });
-  currentStep = index;
+  currentStep = n;
 }
 
-function goBack() {
-  if (currentStep > 0) {
-    showStep(currentStep - 1);
-  }
-}
-
+// ---------------------------
+// EMAIL VALIDATION
+// ---------------------------
 function isValidEmail(email) {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return regex.test(email);
 }
-function handleNext(e) {
+
+// ---------------------------
+// BUTTON HANDLERS
+// ---------------------------
+document.addEventListener("click", function (e) {
+  if (e.target.id === "startBtn") {
+    showStep(1);
+  }
+
+  if (e.target.classList.contains("nextBtn")) {
+    handleNext(e);
+  }
+
+  if (e.target.classList.contains("backBtn")) {
+    if (currentStep > 0) showStep(currentStep - 1);
+  }
+});
+
+// ---------------------------
+// VALIDATE + ADVANCE STEP
+// ---------------------------
+function handleNext() {
   const stepEl = steps[currentStep];
 
-  // All required fields in this step (inputs + selects)
-  const requiredFields = stepEl.querySelectorAll('select[required], input[required]');
+  // Required fields in this step
+  const requiredFields = stepEl.querySelectorAll("select[required], input[required]");
 
-for (const field of requiredFields) {
+  for (const field of requiredFields) {
     if (!field.value || !field.value.trim()) {
-      alert('Please fill in all required fields before continuing.');
+      alert("Please fill in all required fields before continuing.");
       return;
     }
 
-    // Extra email validation
+    // Email validation
     if (field.type === "email" && !isValidEmail(field.value.trim())) {
-      alert('Please enter a valid email address.');
+      alert("Please enter a valid email address.");
       return;
     }
-}
+  }
 
-  // If it's the last step (or finish button), compute and go to results
-  if (currentStep === steps.length - 1 || e.target.id === 'finishBtn') {
+  // If it's the last question step → compute + redirect
+  if (currentStep === steps.length - 1) {
     computeAndRedirect();
   } else {
     showStep(currentStep + 1);
   }
 }
 
-function computeAndRedirect() {
-  const selects = Array.from(document.querySelectorAll('select[data-dept]'));
+// ---------------------------
+// COMPUTE SCORE + SAVE TO SUPABASE + REDIRECT
+// ---------------------------
+
+async function computeAndRedirect() {
+  const selects = Array.from(document.querySelectorAll("select[data-dept]"));
 
   const totals = {
     brand: 0,
@@ -69,7 +79,7 @@ function computeAndRedirect() {
     finance: 0,
     rnd: 0,
     communication: 0,
-    leadership: 0
+    leadership: 0,
   };
 
   selects.forEach(sel => {
@@ -82,26 +92,59 @@ function computeAndRedirect() {
 
   const totalScore = Object.values(totals).reduce((a, b) => a + b, 0);
 
-  const params = new URLSearchParams();
-  params.set('brand', String(totals.brand));
-  params.set('operations', String(totals.operations));
-  params.set('finance', String(totals.finance));
-  params.set('rnd', String(totals.rnd));
-  params.set('communication', String(totals.communication));
-  params.set('leadership', String(totals.leadership));
-  params.set('total', String(totalScore));
+  // PHASE LOGIC
+  function getPhase(score) {
+    if (score <= 20) return "Survival";
+    if (score <= 40) return "Rebuild";
+    if (score <= 60) return "Stability";
+    if (score <= 80) return "Growth";
+    if (score <= 100) return "Momentum";
+    return "Mastery";
+  }
+  const phase = getPhase(totalScore);
 
-  // Add name to personalise results
+  // USER DETAILS
   const nameField = document.querySelector('input[name="fullName"]');
-  if (nameField && nameField.value.trim()) {
-    params.set('name', nameField.value.trim());
+  const emailField = document.querySelector('input[name="email"]');
+  const fullName = nameField ? nameField.value.trim() : "";
+  const email = emailField ? emailField.value.trim() : "";
+
+  // ---------------------------
+  // SAVE TO SUPABASE
+  // ---------------------------
+  const { error } = await supabase
+    .from("youinc_scores")
+    .insert({
+      full_name: fullName,
+      email: email,
+      phase: phase,
+      score_brand: totals.brand,
+      score_operations: totals.operations,
+      score_finance: totals.finance,
+      score_rnd: totals.rnd,
+      score_communication: totals.communication,
+      score_leadership: totals.leadership,
+      total_score: totalScore,
+    });
+
+  if (error) {
+    console.error("Supabase Error:", error);
+    alert("Something went wrong saving your results. Please try again.");
+    return;
   }
 
-  // We will use email later for sending, but keep it off the URL for now
-  // const emailField = document.querySelector('input[name="email"]');
+  // ---------------------------
+  // REDIRECT WITH SCORES
+  // ---------------------------
+  const params = new URLSearchParams();
+  params.set("name", fullName);
+  params.set("brand", totals.brand);
+  params.set("operations", totals.operations);
+  params.set("finance", totals.finance);
+  params.set("rnd", totals.rnd);
+  params.set("communication", totals.communication);
+  params.set("leadership", totals.leadership);
+  params.set("total", totalScore);
 
   window.location.href = `results.html?${params.toString()}`;
 }
-
-// initial show
-showStep(0);
