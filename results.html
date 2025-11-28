@@ -5,92 +5,151 @@
   <title>YOU Inc. Scorecard — Results</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
   <link rel="icon" type="image/jpeg" href="youinc-favicon.jpg">
+  <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
-    <a href="https://youinc.global" class="global-logo-link" target="_blank">
-    <img src="youin-logo.jpg" alt="You Inc Logo" class="global-logo">
+
+  <!-- GLOBAL LOGO (top-left) -->
+  <a href="https://youinc.global" class="global-logo-link" target="_blank">
+    <img src="youinc-logo.jpg" alt="You Inc Logo" class="global-logo">
   </a>
+
   <main class="app">
     <header class="header">
-      <h1>Your YOU Inc. Results</h1>
+      <h1>Your YOU Inc. Summary</h1>
+      <p class="subtitle">A quick overview of your current performance phase.</p>
     </header>
 
     <section class="card" id="resultsCard">
       <div id="summary"></div>
+
       <hr style="border:none;border-top:1px solid #eee;margin:16px 0;" />
-      <div id="breakdown"></div>
+
+      <div id="phase"></div>
+
       <hr style="border:none;border-top:1px solid #eee;margin:16px 0;" />
-      <div id="focus"></div>
+
+      <div id="weakest"></div>
+
+      <hr style="border:none;border-top:1px solid #eee;margin:16px 0;" />
+
+      <div id="cta"></div>
     </section>
 
     <footer class="footer">
-      <small>YOU Inc. • This is your starting point, not your ceiling.</small>
+      <small>YOU Inc. • Build yourself like a business.</small>
     </footer>
   </main>
 
-  <script>
-    const qs = new URLSearchParams(window.location.search);
-    const brand = Number(qs.get('brand') || 0);
-    const operations = Number(qs.get('operations') || 0);
-    const finance = Number(qs.get('finance') || 0);
-    const rnd = Number(qs.get('rnd') || 0);
-    const communication = Number(qs.get('communication') || 0);
-    const leadership = Number(qs.get('leadership') || 0);
-    const total = Number(qs.get('total') || 0);
-    const name = qs.get('name') || '';
+<script>
+  // Parse query string
+  const qs = new URLSearchParams(window.location.search);
 
-    const maxPerDept = 20; // 4 questions * 5
-    const maxTotal = 120;  // 6 * 20
+  const name = qs.get('name') || '';
 
-   const summaryEl = document.getElementById('summary');
-const greeting = name
-  ? `<p style="margin:0 0 4px 0;font-size:14px;">Hey <strong>${name}</strong>, here’s your YOU Inc. snapshot:</p>`
-  : '';
+  const brand = Number(qs.get('brand') || 0);
+  const operations = Number(qs.get('operations') || 0);
+  const finance = Number(qs.get('finance') || 0);
+  const rnd = Number(qs.get('rnd') || 0);
+  const communication = Number(qs.get('communication') || 0);
+  const leadership = Number(qs.get('leadership') || 0);
+  const total = Number(qs.get('total') || 0);
 
-summaryEl.innerHTML = `
-  ${greeting}
-  <p style="margin:0 0 4px 0;font-size:14px;color:#666;">Total YOU Inc. score</p>
-  <p style="margin:0;font-size:26px;font-weight:700;">${total} / ${maxTotal}</p>
-`;
+  const maxTotal = 120;
 
-    const breakdownData = [
-      ['Brand', brand],
-      ['Operations', operations],
-      ['Finance (Resources)', finance],
-      ['R&D', rnd],
-      ['Communication', communication],
-      ['Leadership', leadership]
-    ];
+  // PHASE LOGIC (6 phases)
+  function getPhase(score) {
+    if (score <= 20) return "Survival";
+    if (score <= 40) return "Rebuild";
+    if (score <= 60) return "Stability";
+    if (score <= 80) return "Growth";
+    if (score <= 100) return "Momentum";
+    return "Mastery";
+  }
 
-    const breakdownEl = document.getElementById('breakdown');
-    breakdownEl.innerHTML = breakdownData.map(([label, score]) =>
-      `<p style="margin:4px 0;"><strong>${label}</strong>: ${score} / ${maxPerDept}</p>`
-    ).join('');
-
-    const weakest = breakdownData.reduce((min, curr) => curr[1] < min[1] ? curr : min, breakdownData[0]);
-    const focusEl = document.getElementById('focus');
-
-    const [weakDept, weakScore] = weakest;
-    let tierText = '';
-
-    if (total <= 40) {
-      tierText = 'You are in a REBUILD phase. This is not failure — it’s awareness. From here, everything is upside.';
-    } else if (total <= 80) {
-      tierText = 'You are in a TRANSITION phase. Some parts of YOU Inc. are strong, others need structure.';
-    } else {
-      tierText = 'You are in a MOMENTUM phase. Your foundation is solid — now it’s about sharpening and scaling.';
+  function getPhaseDescription(phase) {
+    switch (phase) {
+      case "Survival":
+        return "You’re doing your best, but structure is missing. This is the perfect starting point — awareness creates opportunity.";
+      case "Rebuild":
+        return "You’re becoming aware of what needs to change. This is where foundations are created.";
+      case "Stability":
+        return "You’re forming consistency. Some things are working, some are not — but you’re getting better.";
+      case "Growth":
+        return "You’re intentionally improving. Your habits and identity are aligning. Progress is noticeable.";
+      case "Momentum":
+        return "You’re operating at a high level. Your systems, habits and identity are supporting your goals strongly.";
+      case "Mastery":
+        return "You’re highly aligned. Your self-leadership, clarity and execution are at a top-performing level.";
     }
+  }
 
-    focusEl.innerHTML = `
-      <h2 style="margin:0 0 8px 0;">Your current phase</h2>
-      <p style="margin:0 0 12px 0;font-size:14px;">${tierText}</p>
-      <h3 style="margin:12px 0 6px 0;">Department to focus next: ${weakDept}</h3>
-      <p style="margin:0 0 8px 0;font-size:14px;">Score: ${weakScore} / ${maxPerDept}</p>
-      <p style="margin:0 0 8px 0;font-size:14px;">Start by asking: “What is one small shift I can make this week to strengthen this department?”</p>
-      <p style="margin:0;font-size:13px;color:#666;">You can retake this scorecard every 30–60 days to measure your growth.</p>
-    `;
-  </script>
+  // FIND WEAKEST DEPARTMENT
+  const scores = [
+    ["Brand", brand],
+    ["Operations", operations],
+    ["Finance (Time/Energy)", finance],
+    ["R&D", rnd],
+    ["Communication", communication],
+    ["Leadership", leadership]
+  ];
+
+  const weakest = scores.reduce((min, curr) => curr[1] < min[1] ? curr : min, scores[0]);
+  const [weakDept, weakScore] = weakest;
+
+  // SIMPLE ACTION RECOMMENDATIONS PER DEPARTMENT
+  function recommendationFor(dept) {
+    switch (dept) {
+      case "Brand":
+        return "Spend 10 minutes each morning defining the version of YOU you're trying to become. Identity drives behaviour.";
+      case "Operations":
+        return "Choose one routine you can repeat daily for the next 7 days. Keep it small, but consistent.";
+      case "Finance (Time/Energy)":
+        return "Do a 24-hour time audit. Remove one distraction and protect one energy source.";
+      case "R&D":
+        return "Commit to learning one new skill or concept every day (10 minutes is enough).";
+      case "Communication":
+        return "Practice saying what you mean in one sentence. Clarity comes from simplicity.";
+      case "Leadership":
+        return "Make one small decision quickly today. Leadership is built through action, not certainty.";
+    }
+  }
+
+  // BUILD PAGE SECTIONS
+  const phaseName = getPhase(total);
+  const phaseDesc = getPhaseDescription(phaseName);
+
+  const summaryEl = document.getElementById('summary');
+  summaryEl.innerHTML = `
+    ${name ? `<p style="margin:0 0 8px 0;font-size:15px;">Hey <strong>${name}</strong>, here's your quick overview:</p>` : ""}
+    <p style="margin:0;font-size:24px;font-weight:700;">${total} / ${maxTotal}</p>
+    <p style="margin:6px 0 0;font-size:13px;color:#666;">Your current YOU Inc. score</p>
+  `;
+
+  const phaseEl = document.getElementById('phase');
+  phaseEl.innerHTML = `
+    <h2 style="margin:0 0 6px 0;">Your Phase: <strong>${phaseName}</strong></h2>
+    <p style="margin:0;font-size:14px;">${phaseDesc}</p>
+  `;
+
+  const weakestEl = document.getElementById('weakest');
+  weakestEl.innerHTML = `
+    <h2 style="margin:0 0 6px 0;">Department to Focus Next</h2>
+    <p style="margin:0 0 10px 0;font-size:15px;"><strong>${weakDept}</strong> (Score: ${weakScore} / 20)</p>
+    <p style="margin:0;font-size:14px;">${recommendationFor(weakDept)}</p>
+  `;
+
+  const ctaEl = document.getElementById('cta');
+  ctaEl.innerHTML = `
+    <h2 style="margin:0 0 6px 0;">Your Full Breakdown</h2>
+    <p style="margin:0 0 10px 0;font-size:14px;">
+      A detailed analysis of all six departments has been sent to your email — including personalised insights and your next steps.
+    </p>
+    <p style="margin:0;font-size:13px;color:#666;">If you don’t see it, check your spam/junk folder.</p>
+  `;
+</script>
+
 </body>
 </html>
