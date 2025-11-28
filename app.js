@@ -29,18 +29,28 @@ function goBack() {
   }
 }
 
+function isValidEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
 function handleNext(e) {
   const stepEl = steps[currentStep];
 
   // All required fields in this step (inputs + selects)
   const requiredFields = stepEl.querySelectorAll('select[required], input[required]');
 
-  for (const field of requiredFields) {
+for (const field of requiredFields) {
     if (!field.value || !field.value.trim()) {
       alert('Please fill in all required fields before continuing.');
       return;
     }
-  }
+
+    // Extra email validation
+    if (field.type === "email" && !isValidEmail(field.value.trim())) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+}
 
   // If it's the last step (or finish button), compute and go to results
   if (currentStep === steps.length - 1 || e.target.id === 'finishBtn') {
