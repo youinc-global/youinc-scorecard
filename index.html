@@ -53,14 +53,14 @@
 
   <label class="field-label" for="email">Email</label>
   <input
-    type="email"
-    id="email"
-    name="email"
-    required
-    placeholder="you@example.com"
-    class="text-input"
-  >
-
+  type="email"
+  id="email"
+  name="email"
+  required
+  placeholder="you@example.com"
+  class="text-input"
+  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+>
   <div class="nav">
     <button type="button" class="btn ghost backBtn">Back</button>
     <button type="button" class="btn primary nextBtn">Next</button>
