@@ -140,14 +140,45 @@
     <p style="margin:0;font-size:14px;">${recommendationFor(weakDept)}</p>
   `;
 
-  const ctaEl = document.getElementById('cta');
-  ctaEl.innerHTML = `
-    <h2 style="margin:0 0 6px 0;">Your Full Breakdown</h2>
-    <p style="margin:0 0 10px 0;font-size:14px;">
-      A detailed analysis of all six departments has been sent to your email — including personalised insights and your next steps.
-    </p>
-    <p style="margin:0;font-size:13px;color:#666;">If you don’t see it, check your spam/junk folder.</p>
-  `;
+// Dynamic CTA message based on phase
+function phaseCTA(phase) {
+  switch (phase) {
+    case "Survival":
+      return "You’re in a pivotal moment. Before life gets heavier, this is the time to take control. Join the next session — let’s build your foundation together.";
+    case "Rebuild":
+      return "You’re becoming aware of what needs to change — that’s powerful. The next session will help you rebuild your systems step-by-step.";
+    case "Stability":
+      return "You’re becoming more consistent. Now it’s time to strengthen your structure so your progress sticks. Join the next live training to stabilise your momentum.";
+    case "Growth":
+      return "You’re evolving, and it’s showing. The next live session will help you sharpen your systems and scale your growth.";
+    case "Momentum":
+      return "You’re performing at a strong level. Your next step is refining your edge and staying consistent. Join the next session to level up your leadership and clarity.";
+    case "Mastery":
+      return "You’re operating at a high level. Now it’s about precision, mastery, and scaling the version of you that works. Join the next session to stay ahead of your growth curve.";
+  }
+}
+
+// Render CTA section
+const ctaEl = document.getElementById('cta');
+ctaEl.innerHTML = `
+  <h2 style="margin:0 0 6px 0;">Ready for Your Next Upgrade?</h2>
+  <p style="margin:0 0 14px 0;font-size:14px;">${phaseCTA(phaseName)}</p>
+
+  <div style="display:flex;justify-content:center;margin-top:10px;">
+    <a href="https://www.youinc.global/webinars" class="btn primary" style="text-decoration:none;">
+      Join the Next Live Training →
+    </a>
+  </div>
+
+  <hr style="border:none;border-top:1px solid #eee;margin:20px 0;">
+
+  <h3 style="margin:0 0 6px 0;font-size:16px;">Your Full Breakdown</h3>
+  <p style="margin:0 0 10px 0;font-size:14px;">
+    A detailed analysis of your six departments has been sent to your email — including insights and your personalised growth roadmap.
+  </p>
+  <p style="margin:0;font-size:13px;color:#666;">If you don’t see it yet, check your spam folder.</p>
+`;
+
 </script>
 
 </body>
