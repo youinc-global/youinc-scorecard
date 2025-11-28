@@ -28,7 +28,7 @@ document.addEventListener("click", function (e) {
   }
 
   if (e.target.classList.contains("nextBtn")) {
-    handleNext(e);
+    handleNext();
   }
 
   if (e.target.classList.contains("backBtn")) {
@@ -43,7 +43,9 @@ function handleNext() {
   const stepEl = steps[currentStep];
 
   // Required fields in this step
-  const requiredFields = stepEl.querySelectorAll("select[required], input[required]");
+  const requiredFields = stepEl.querySelectorAll(
+    "select[required], input[required]"
+  );
 
   for (const field of requiredFields) {
     if (!field.value || !field.value.trim()) {
@@ -52,7 +54,10 @@ function handleNext() {
     }
 
     // Email validation
-    if (field.type === "email" && !isValidEmail(field.value.trim())) {
+    if (
+      field.type === "email" &&
+      !isValidEmail(field.value.trim())
+    ) {
       alert("Please enter a valid email address.");
       return;
     }
@@ -69,7 +74,6 @@ function handleNext() {
 // ---------------------------
 // COMPUTE SCORE + SAVE TO SUPABASE + REDIRECT
 // ---------------------------
-
 async function computeAndRedirect() {
   const selects = Array.from(document.querySelectorAll("select[data-dept]"));
 
@@ -82,7 +86,7 @@ async function computeAndRedirect() {
     leadership: 0,
   };
 
-  selects.forEach(sel => {
+  selects.forEach((sel) => {
     const dept = sel.dataset.dept;
     const value = Number(sel.value || 0);
     if (dept && totals.hasOwnProperty(dept)) {
@@ -112,7 +116,7 @@ async function computeAndRedirect() {
   // ---------------------------
   // SAVE TO SUPABASE
   // ---------------------------
-  const { error } = await supabase
+  const { error } = await supabaseClient
     .from("youinc_scores")
     .insert({
       full_name: fullName,
